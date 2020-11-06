@@ -5,15 +5,30 @@ import { StyleSheet, View, TextInput, Button, Text,FlatList  } from 'react-nativ
 
 import films from '../Helpers/filmsData'
 import FilmItem from './FilmItem'
+import { getFilmsFromApiWithSearchedText } from '../API/TMDBApi'
+// import { } from ... car c'est un export nommé dans TMDBApi.js
 
 class Search extends React.Component {
+
+  constructor(props) {
+   super(props)
+   this._films = []
+ }
+
+
+ _loadFilms() {
+     getFilmsFromApiWithSearchedText("star").then(data => {
+       this._films = data.results
+       this.forceUpdate()
+     })
+  }
   render() {
     return (
       <View style={styles.main_container}>
         <TextInput style={styles.textinput} placeholder='Titre du film'/>
-        <Button title='Rechercher' onPress={() => {}}/>
+        <Button title='Rechercher' onPress={() => this._loadFilms()}/>
         <FlatList
-         data={films}
+         data={this._films}
          keyExtractor={(item) => item.id.toString()}
          renderItem={({item}) => <FilmItem film={item}/>}
         />
